@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "ventas",
+  "info": {
+    "singularName": "venta",
+    "pluralName": "ventas",
+    "displayName": "Venta"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "metodoPago": {
+      "type": "enumeration",
+      "enum": [
+        "efectivo",
+        "tarjeta"
+      ]
+    },
+    "fecha": {
+      "type": "datetime"
+    },
+    "pedidos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::pedido.pedido"
+    },
+    "cliente": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::cliente.cliente"
+    },
+    "total": {
+      "type": "float"
+    }
+  }
+}
