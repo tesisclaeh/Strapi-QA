@@ -24,12 +24,6 @@
       "regex": "^[0-9]+$",
       "required": true,
       "unique": true
-    },
-    "pedidos": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::pedido.pedido",
-      "mappedBy": "cliente"
     }
   }
 }

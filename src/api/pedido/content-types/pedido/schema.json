@@ -18,9 +18,8 @@
     },
     "cliente": {
       "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::cliente.cliente",
-      "inversedBy": "pedidos"
+      "relation": "oneToOne",
+      "target": "api::cliente.cliente"
     },
     "estado": {
       "type": "enumeration",

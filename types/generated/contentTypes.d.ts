@@ -802,11 +802,6 @@ export interface ApiClienteCliente extends Schema.CollectionType {
     nombre: Attribute.String & Attribute.Required & Attribute.Unique;
     direccion: Attribute.String;
     celular: Attribute.String & Attribute.Required & Attribute.Unique;
-    pedidos: Attribute.Relation<
-      'api::cliente.cliente',
-      'oneToMany',
-      'api::pedido.pedido'
-    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -840,7 +835,7 @@ export interface ApiPedidoPedido extends Schema.CollectionType {
     fechaPedido: Attribute.DateTime & Attribute.Required;
     cliente: Attribute.Relation<
       'api::pedido.pedido',
-      'manyToOne',
+      'oneToOne',
       'api::cliente.cliente'
     >;
     estado: Attribute.Enumeration<['pendiente', 'completo', 'cancelado']> &
