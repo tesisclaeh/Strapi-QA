@@ -16,16 +16,16 @@ export default factories.createCoreController('api::producto.producto', ({ strap
             }
         }
 
-        const producto = await strapi.db.query('api::producto.producto').findOne({
+        const producto = await strapi.db.query('api::producto.producto').findMany({
             where: {
                 nombre: {$containsi: nombre}
             }
         });
 
-        if(!producto) {
+        if(!producto || producto.length === 0) {
             ctx.response.status = 404;
             ctx.response.body = {
-                error: 'No se encontro el cliente'
+                error: 'No se encontro el producto'
             }
         }
 

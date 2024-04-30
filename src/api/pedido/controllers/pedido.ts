@@ -7,9 +7,15 @@ import { factories } from '@strapi/strapi'
 export default factories.createCoreController('api::pedido.pedido', ({ strapi }) => ({
   async create(ctx) {
     try {
-        const { fechaPedido, cliente, estado, Productos } = ctx.request.body;
+        const { data : { fechaPedido, cliente, estado, Productos, celular
+        } } = ctx.request.body;
 
-        if(!fechaPedido || !cliente || !estado || !Productos) {
+        console.log("--------------------------------------------------");
+        console.log(fechaPedido, cliente, estado, Productos, celular);
+        console.log("--------------------------------------------------");
+
+
+        if(!fechaPedido || !Productos || !celular) {
             ctx.response.status = 400;
             ctx.response.body = {
                 message: 'Faltan datos'
@@ -19,11 +25,16 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
 
         const pedidoPendientes = await strapi.db.query('api::pedido.pedido').findMany({
             where: {
-                estado: {$eqi: 'pendiente'}
+                estado: {$eqi: 'pendiente'},
+                celular: {$eqi: celular}
             }
         });
 
-        if(pedidoPendientes) {
+        console.log("--------------------------------------------------");
+        console.log(pedidoPendientes);
+        console.log("--------------------------------------------------");
+
+        if(pedidoPendientes.length > 0) {
             ctx.response.status = 400;
             ctx.response.body = {
                 message: 'Ya hay un pedido pendiente'
@@ -36,7 +47,9 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
                 fechaPedido,
                 cliente,
                 estado,
-                Productos
+                Productos,
+                celular,
+                publishedAt: new Date()
             }
         });
 
@@ -56,7 +69,7 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
     }
   },
 
-  async findPedidoPorCelularDeCliente(ctx) {
+  async findPedidoPorCelular(ctx) {
     try {
         const { celular } = ctx.request.body;
 
@@ -68,24 +81,10 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
             return;
         }
 
-        const cliente = await strapi.db.query('api::cliente.cliente').findOne({
-            where: {
-                celular
-            }
-        });
-
-        if(!cliente) {
-            ctx.response.status = 400;
-            ctx.response.body = {
-                error: 'No hay un cleinte con ese celular'
-            }
-            return; 
-        }
-
         const pedidoActivo = await strapi.db.query('api::pedido.pedido').findOne({
             where: {
-                cliente: {$eqi: cliente.id},
-                estado: {$eqi: 'pendiente'}
+                celular: { $eqi: celular },
+                estado: { $eqi: 'pendiente' }
             }
         });
 

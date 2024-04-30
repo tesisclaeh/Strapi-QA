@@ -29,11 +29,17 @@
         "cancelado"
       ],
       "default": "pendiente",
-      "required": true
+      "required": false
     },
     "Productos": {
       "type": "json",
       "required": true
+    },
+    "celular": {
+      "type": "string",
+      "required": true,
+      "regex": "^[0-9]+$",
+      "unique": true
     }
   }
 }

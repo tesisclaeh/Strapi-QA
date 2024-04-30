@@ -839,9 +839,9 @@ export interface ApiPedidoPedido extends Schema.CollectionType {
       'api::cliente.cliente'
     >;
     estado: Attribute.Enumeration<['pendiente', 'completo', 'cancelado']> &
-      Attribute.Required &
       Attribute.DefaultTo<'pendiente'>;
     Productos: Attribute.JSON & Attribute.Required;
+    celular: Attribute.String & Attribute.Required & Attribute.Unique;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

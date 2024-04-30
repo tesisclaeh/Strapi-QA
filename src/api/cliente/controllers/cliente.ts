@@ -57,7 +57,7 @@ export default factories.createCoreController('api::cliente.cliente', ({ strapi 
 
         const cliente = await strapi.db.query('api::cliente.cliente').findOne({
             where: {
-                nombre: {$eq: celular}
+                celular: {$eq: celular}
             }
         });
 

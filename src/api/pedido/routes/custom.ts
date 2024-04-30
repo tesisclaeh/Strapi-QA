@@ -2,8 +2,8 @@ module.exports = {
     routes : [
         {
             method: 'POST',
-            path: '/findPedidoPorCelularDeCliente',
-            handler: 'pedido.findPedidoPorCelularDeCliente',
+            path: '/findPedidoPorCelular',
+            handler: 'pedido.findPedidoPorCelular',
             confing: {
                 auth: false
             }
