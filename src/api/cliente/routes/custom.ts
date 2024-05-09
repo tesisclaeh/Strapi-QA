@@ -15,6 +15,14 @@ module.exports = {
             confing: {
                 auth: false
             }
+        },
+        {
+            method: 'POST',
+            path: '/isClienteRegister',
+            handler: 'cliente.isClienteRegister',
+            confing: {
+                auth: false
+            }
         }
     ]
 }

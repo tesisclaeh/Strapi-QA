@@ -7,12 +7,7 @@ import { factories } from '@strapi/strapi'
 export default factories.createCoreController('api::pedido.pedido', ({ strapi }) => ({
   async create(ctx) {
     try {
-        const { data : { fechaPedido, cliente, estado, Productos, celular
-        } } = ctx.request.body;
-
-        console.log("--------------------------------------------------");
-        console.log(fechaPedido, cliente, estado, Productos, celular);
-        console.log("--------------------------------------------------");
+        const { data : { fechaPedido, cliente, estado, Productos, celular, direccion } } = ctx.request.body;
 
 
         if(!fechaPedido || !Productos || !celular) {
@@ -30,16 +25,56 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
             }
         });
 
-        console.log("--------------------------------------------------");
-        console.log(pedidoPendientes);
-        console.log("--------------------------------------------------");
-
         if(pedidoPendientes.length > 0) {
             ctx.response.status = 400;
             ctx.response.body = {
-                message: 'Ya hay un pedido pendiente'
+                message: 'Usted ya tiene un pedido pendiente, puede modificar su pedido actual o cancelarlo',
+                pedidoPendiente: pedidoPendientes
             }
             return;
+        }
+
+        // Validar la estructura JSON del pedido
+        const { items, total } = Productos;
+
+        if (!Array.isArray(items) || typeof total !== 'number') {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                message: 'Estructura general del pedido incorrecta'
+            }
+            return;
+          }
+
+          for (const item of items) {
+            const { id, nombre, precio, cantidad } = item;
+      
+            if (typeof id !== 'number' || typeof nombre !== 'string' || typeof precio !== 'number' || typeof cantidad !== 'number') {
+                ctx.response.status = 400;
+                ctx.response.body = {
+                    message: 'Estructura de los items incorrecta'
+                }
+                return;
+            }
+          }
+
+          let direccionClinete
+
+        if(!direccion) {
+            const cli = await strapi.db.query('api::cliente.cliente').findOne({
+                where: {
+                    celular: { $eqi: celular }
+                }
+            });
+
+            if(!cli) {
+                ctx.response.status = 400;
+                ctx.response.body = {
+                    message: 'Se requiere una dirección de entrega para el pedido'
+                }
+                return;
+            }
+
+            direccionClinete = cli.direccion
         }
 
         const pedido = await strapi.db.query('api::pedido.pedido').create({
@@ -49,6 +84,7 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
                 estado,
                 Productos,
                 celular,
+                direccion: direccion ?? direccionClinete,
                 publishedAt: new Date()
             }
         });
@@ -91,7 +127,8 @@ export default factories.createCoreController('api::pedido.pedido', ({ strapi })
         if(!pedidoActivo) {
             ctx.response.status = 400;
             ctx.response.body = {
-                error: 'El cliente no tiene un pedido por el cual pagar'
+                error: 'El cliente no tiene un pedido pendiente por el cual pagar, puede solicitar un nuevo pedido',
+                pedidoPendiente: pedidoActivo
             }
             return;
         }

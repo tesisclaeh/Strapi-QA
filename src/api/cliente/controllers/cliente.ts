@@ -81,5 +81,45 @@ export default factories.createCoreController('api::cliente.cliente', ({ strapi 
             message: 'Error en el servidor'
         }
     }
+  },
+  async isClienteRegister(ctx) {
+    try {    
+        let { celular } = ctx.request.body;
+
+        if(!celular) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+                error: 'Falta el celular'
+            }
+        }
+
+        const cliente = await strapi.db.query('api::cliente.cliente').findOne({
+            where: {
+                celular: {$eq: celular}
+            }
+        });
+
+        if(cliente) {
+            ctx.response.status = 200;
+            ctx.response.body = {
+                identificado: true,
+                mensaje: "Este cliente ya se encuentra registrado"
+            }
+        } else {
+            ctx.response.status = 200;
+            ctx.response.body = {
+                identificado: false,
+                mensaje: "Este cliente no se encuentra registrado"
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        ctx.response.status = 500;
+        ctx.response.body = {
+            error: error,
+            message: 'Error en el servidor'
+        }
+    }
   }
+
 }));

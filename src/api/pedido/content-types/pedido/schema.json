@@ -40,6 +40,17 @@
       "required": true,
       "regex": "^[0-9]+$",
       "unique": true
+    },
+    "direccion": {
+      "type": "string"
+    },
+    "pago": {
+      "type": "enumeration",
+      "enum": [
+        "en puerta",
+        "mercado pago"
+      ],
+      "default": "en puerta"
     }
   }
 }

@@ -842,6 +842,9 @@ export interface ApiPedidoPedido extends Schema.CollectionType {
       Attribute.DefaultTo<'pendiente'>;
     Productos: Attribute.JSON & Attribute.Required;
     celular: Attribute.String & Attribute.Required & Attribute.Unique;
+    direccion: Attribute.String;
+    pago: Attribute.Enumeration<['en puerta', 'mercado pago']> &
+      Attribute.DefaultTo<'en puerta'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
